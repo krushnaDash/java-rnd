@@ -41,7 +41,13 @@ public class JWTUtil {
 	    }
 	  }
 	  
-
+	/**
+	 * JWT Claims Set:{iss=Issuer, aud=Audience, exp=1741196015, jti=Eaucp0Q-_DXrCLZ8zgXWpg, iat=1741195415, nbf=1741195295, sub=subject, email=mail@example.com, groups=[group-one, other-group, group-three]}
+	 * JWT Claims Set:{scope=openid full, authorization_details=[], client_id=Connected-Associate, guid=TLkQo0Oyo46TQBeCKKM1ZmX5dH5kWiPQ, iss=https://pfedcert.wal-mart.com, jti=1AKTeyhl, aud=Connected-Associate, sub=232576539, upn=s0a0j1f@homeoffice.wal-mart.com, nbf=1739522800, iat=1739522920, exp=1739523820}  
+	 * @return
+	 * @throws Exception
+	 */
+	
 	public static String createToken() throws Exception {
 		  
 		   // Generate an RSA key pair, which will be used for signing and verification of the JWT, wrapped in a JWK
