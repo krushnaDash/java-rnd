@@ -36,6 +36,10 @@ public class ThreeSum {
 		//two pointer approach
 		
 		for(int i =0; i < nums.length-2; ++i) {
+			
+			//since the array is sorted, we just need to check the previous element to skip
+			if(i>0 && nums[i] ==nums[i-1])
+				continue;
 			int j=i+1;
 			int k=nums.length-1;
 			
