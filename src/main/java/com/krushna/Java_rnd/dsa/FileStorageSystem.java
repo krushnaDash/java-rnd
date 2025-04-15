@@ -92,10 +92,12 @@ public class FileStorageSystem {
 		return collectionIndexMap.entrySet().stream().sorted((e1, e2) -> e2.getValue() - e1.getValue()).limit(n)
 				.map(e -> e.getKey()).toList();
 	}
+	
 
 	public List<Integer> getTopNCollection(int n) {
 		return fileMetaDataList.subList(0, n).stream().map(e -> e.collectionId).toList();
 	}
+	
 
 	public static void main(String[] args) {
 		FileStorageSystem fileStorageSystem = new FileStorageSystem();

@@ -8,7 +8,13 @@ package com.krushna.Java_rnd.dsa;
  * Write a program which distributes these mangoes with minimal disparity among
  * each person (maximise fairness in distribution)
  * 
+ * This Multi-way Number Partitioning Problem is NP-Hard. So, we can
+ * 
+ * A greedy or backtracking approach with optimization can be used.
+ * 
  */
 public class MangoDistribution {
 
+
+	
 }
