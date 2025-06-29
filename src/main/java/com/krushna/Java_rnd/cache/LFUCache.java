@@ -4,14 +4,19 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
+/**
+ * Salesforce LLd
+ * @param <K>
+ * @param <V>
+ */
 public class LFUCache<K, V> {
 
     private final int capacity;
     private int minFreq = 0;
 
     private final Map<K, V> values = new HashMap<>();
-    private final Map<K, Integer> freqs = new HashMap<>();
-    private final Map<Integer, LinkedHashSet<K>> freqLists = new HashMap<>();
+    private final Map<K, Integer> keyFreqsMap = new HashMap<>();
+    private final Map<Integer, LinkedHashSet<K>> freqMapList = new HashMap<>();
 
     public LFUCache(int capacity) {
         this.capacity = capacity;
@@ -37,33 +42,33 @@ public class LFUCache<K, V> {
         }
 
         values.put(key, value);
-        freqs.put(key, 1);
-        freqLists.computeIfAbsent(1, ignore -> new LinkedHashSet<>()).add(key);
+        keyFreqsMap.put(key, 1);
+        freqMapList.computeIfAbsent(1, ignore -> new LinkedHashSet<>()).add(key);
         minFreq = 1;
     }
 
     private void increaseFreq(K key) {
-        int freq = freqs.get(key);
-        freqs.put(key, freq + 1);
-        freqLists.get(freq).remove(key);
+        int freq = keyFreqsMap.get(key);
+        keyFreqsMap.put(key, freq + 1);
+        freqMapList.get(freq).remove(key);
 
-        if (freqLists.get(freq).isEmpty()) {
-            freqLists.remove(freq);
+        if (freqMapList.get(freq).isEmpty()) {
+            freqMapList.remove(freq);
             if (freq == minFreq) minFreq++;
         }
 
-        freqLists.computeIfAbsent(freq + 1, ignore -> new LinkedHashSet<>()).add(key);
+        freqMapList.computeIfAbsent(freq + 1, ignore -> new LinkedHashSet<>()).add(key);
     }
 
     private void evictLFU() {
-        LinkedHashSet<K> keys = freqLists.get(minFreq);
+        LinkedHashSet<K> keys = freqMapList.get(minFreq);
         K evictKey = keys.iterator().next();
         keys.remove(evictKey);
 
-        if (keys.isEmpty()) freqLists.remove(minFreq);
+        if (keys.isEmpty()) freqMapList.remove(minFreq);
 
         values.remove(evictKey);
-        freqs.remove(evictKey);
+        keyFreqsMap.remove(evictKey);
     }
 
     // Demo
