@@ -1,85 +1,106 @@
 package com.krushna.Java_rnd.cache;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-/**
- * Salesforce LLd
- * @param <K>
- * @param <V>
- */
 public class LFUCache<K, V> {
 
-    private final int capacity;
-    private int minFreq = 0;
+	int capacity;
+	Map<K, V> cacheEntries;
+	Map<K, Integer> keyFrequency;
 
-    private final Map<K, V> values = new HashMap<>();
-    private final Map<K, Integer> keyFreqsMap = new HashMap<>();
-    private final Map<Integer, LinkedHashSet<K>> freqMapList = new HashMap<>();
+	int minFrequency = 1;
 
-    public LFUCache(int capacity) {
-        this.capacity = capacity;
-    }
+	public LFUCache(int capacity) {
+		this.capacity = capacity;
+		cacheEntries = HashMap.newHashMap(capacity);
+		keyFrequency = HashMap.newHashMap(capacity);
+	}
 
-    public V get(K key) {
-        if (!values.containsKey(key)) return null;
-        increaseFreq(key);
-        return values.get(key);
-    }
+	Map<Integer, List<K>> frequncyKeysMap = new HashMap<>();
 
-    public void put(K key, V value) {
-        if (capacity == 0) return;
+	public void put(K k, V v) {
+		if (capacity <= 0) {
+			throw new RuntimeException("capacity is zero");
+		}
+		// check the size and then remove key
+		if (cacheEntries.size() > capacity) {
+			// remove less used key
+			evictKey();
+		}
 
-        if (values.containsKey(key)) {
-            values.put(key, value);
-            increaseFreq(key);
-            return;
-        }
+		if (cacheEntries.containsKey(k)) {
+			increaseFrequency(k);
+		} else {
+			minFrequency = 1;
+			keyFrequency.put(k, 1);
+			frequncyKeysMap.computeIfAbsent(1, ignore -> new LinkedList<K>()).add(k);
+		}
+		cacheEntries.put(k, v);
 
-        if (values.size() >= capacity) {
-            evictLFU();
-        }
+	}
 
-        values.put(key, value);
-        keyFreqsMap.put(key, 1);
-        freqMapList.computeIfAbsent(1, ignore -> new LinkedHashSet<>()).add(key);
-        minFreq = 1;
-    }
+	public V get(K k) {
+		V v = cacheEntries.get(k);
+		if (v != null) {
+			increaseFrequency(k);
+		}
+		return v;
+	}
 
-    private void increaseFreq(K key) {
-        int freq = keyFreqsMap.get(key);
-        keyFreqsMap.put(key, freq + 1);
-        freqMapList.get(freq).remove(key);
+	private void evictKey() {
+		List<K> keys = frequncyKeysMap.get(minFrequency);
+		K key = keys.remove(0);
+		cacheEntries.remove(key);
+		keyFrequency.remove(key);
 
-        if (freqMapList.get(freq).isEmpty()) {
-            freqMapList.remove(freq);
-            if (freq == minFreq) minFreq++;
-        }
+		// remove the frequency entry which key list is empty now
+		if (keys.isEmpty()) {
+			keyFrequency.remove(minFrequency);
+		}
+	}
 
-        freqMapList.computeIfAbsent(freq + 1, ignore -> new LinkedHashSet<>()).add(key);
-    }
+	private void increaseFrequency(K key) {
+		int frequncy = keyFrequency.get(key);
+		keyFrequency.put(key, frequncy + 1);
+		// remove from old keyList and move to new one
+		List<K> keys = frequncyKeysMap.get(frequncy);
+		keys.remove(key);
 
-    private void evictLFU() {
-        LinkedHashSet<K> keys = freqMapList.get(minFreq);
-        K evictKey = keys.iterator().next();
-        keys.remove(evictKey);
+		if (keys.isEmpty()) {
+			frequncyKeysMap.remove(frequncy);
+			if (frequncy == minFrequency)
+				minFrequency++;
+		}
+		frequncyKeysMap.computeIfAbsent(frequncy + 1, keyValue -> new LinkedList<K>()).add(key);
+	}
 
-        if (keys.isEmpty()) freqMapList.remove(minFreq);
+	public static void main(String[] args) {
+		LFUCache<String, String> cache = new LFUCache<String, String>(3);
 
-        values.remove(evictKey);
-        keyFreqsMap.remove(evictKey);
-    }
+		cache.put("key1", "v0");
+		cache.put("key2", "v2");
+		cache.put("key1", "v1");
+		cache.put("key3", "v3");
+		cache.put("key4", "v4");
+		//
+		System.out.println(cache.cacheEntries);
+		System.out.println(cache.frequncyKeysMap);
 
-    // Demo
-    public static void main(String[] args) {
-        LFUCache<Integer, String> cache = new LFUCache<>(3);
-        cache.put(1, "A");
-        cache.put(2, "B");
-        cache.put(3, "C");
-        cache.get(1);  // freq: 1 → 2
-        cache.get(1);  // freq: 2 → 3
-        cache.put(4, "D"); // evict key with least freq (2 or 3)
-        System.out.println(cache.values); // Expect key 1, 4, and one of 2/3
-    }
+		System.out.println(cache.get("key3"));
+		System.out.println(cache.get("key3"));
+		System.out.println(cache.get("key3"));
+		System.out.println(cache.get("key3"));
+
+		cache.put("key4", "v4");
+		cache.put("key5", "v5");
+		cache.put("key6", "v6");
+
+		System.out.println(cache.cacheEntries);
+		System.out.println(cache.frequncyKeysMap);
+
+	}
+
 }
