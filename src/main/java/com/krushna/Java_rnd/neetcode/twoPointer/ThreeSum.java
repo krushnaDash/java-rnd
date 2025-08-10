@@ -1,4 +1,4 @@
-package com.krushna.Java_rnd.leetcode.twoPointer;
+package com.krushna.Java_rnd.neetcode.twoPointer;
 
 import java.util.ArrayList;
 import java.util.Arrays;

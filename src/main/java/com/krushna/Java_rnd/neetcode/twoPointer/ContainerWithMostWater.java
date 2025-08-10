@@ -1,4 +1,4 @@
-package com.krushna.Java_rnd.leetcode.twoPointer;
+package com.krushna.Java_rnd.neetcode.twoPointer;
 
 /**
  * https://leetcode.com/problems/container-with-most-water/description/ You are
