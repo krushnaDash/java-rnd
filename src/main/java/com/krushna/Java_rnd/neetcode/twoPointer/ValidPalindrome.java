@@ -1,4 +1,4 @@
-package com.krushna.Java_rnd.leetcode.twoPointer;
+package com.krushna.Java_rnd.neetcode.twoPointer;
 
 /**
  * Given a string s, return true if it is a palindrome, otherwise return false.
