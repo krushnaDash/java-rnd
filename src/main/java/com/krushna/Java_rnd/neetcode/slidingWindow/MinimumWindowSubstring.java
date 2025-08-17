@@ -3,8 +3,6 @@ package com.krushna.Java_rnd.neetcode.slidingWindow;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
-
 /**
  * https://leetcode.com/problems/minimum-window-substring/description/
  * 
@@ -46,10 +44,7 @@ public class MinimumWindowSubstring {
 	 * We can create the tcountMap and reuse it for matching
 	 * 
 	 * Plus doing a every time match, we can do some optimisation here by maintaining have count.
-	 *  
-	 * 
-	 * 
-	 * 
+	 *  Refer this
 	 */
 	
 	public static String minWindowV2(String s, String t) {
@@ -127,6 +122,61 @@ public class MinimumWindowSubstring {
 		}
 		return subString;
 	}
+	
+	
+	/**
+	 * Ultra-optimized version with reduced cognitive complexity and better performance
+	 * Uses character arrays for ASCII characters (0-127) for O(1) access
+	 */
+	public static String minWindowV3(String s, String t) {
+		if (s.isEmpty() || t.isEmpty() || s.length() < t.length()) {
+			return "";
+		}
+		
+		// Use arrays for better performance with ASCII characters
+		int[] targetCount = new int[128];
+		int[] windowCount = new int[128];
+		int requiredChars = 0;
+		
+		// Build target frequency array
+		for (char c : t.toCharArray()) {
+			if (targetCount[c] == 0) requiredChars++;
+			targetCount[c]++;
+		}
+		
+		int left = 0;
+		int minStart = 0;
+		int minLen = Integer.MAX_VALUE;
+		int formedChars = 0;
+		
+		for (int right = 0; right < s.length(); right++) {
+			char rightChar = s.charAt(right);
+			windowCount[rightChar]++;
+			
+			// Check if current character frequency matches target
+			if (targetCount[rightChar] > 0 && windowCount[rightChar] == targetCount[rightChar]) {
+				formedChars++;
+			}
+			
+			// Contract window
+			while (formedChars == requiredChars && left <= right) {
+				if (right - left + 1 < minLen) {
+					minStart = left;
+					minLen = right - left + 1;
+				}
+				
+				char leftChar = s.charAt(left);
+				windowCount[leftChar]--;
+				if (targetCount[leftChar] > 0 && windowCount[leftChar] < targetCount[leftChar]) {
+					formedChars--;
+				}
+				left++;
+			}
+		}
+		
+		return minLen == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + minLen);
+	}
+	
 	
 	
 	
