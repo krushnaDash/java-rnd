@@ -1,4 +1,4 @@
-package com.krushna.Java_rnd.leetcode.stack;
+package com.krushna.Java_rnd.neetcode.stack;
 
 import java.util.HashMap;
 import java.util.Map;
