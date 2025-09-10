@@ -27,7 +27,8 @@ public class MedianofTwoSortedArrays {
 	
 	
 	/**
-	 * This one we will write in more optimise version using a binary search to get o(log m+n) time complexity
+	 * This one we will write in more optimise version using a binary search to get O(Log(Min(N,M))) time complexity
+	 * 
 	 * The logic here is
 	 * 1. We need to find the left partition, which will be combination of some element from first and second array
 	 * 2. We can have the binary search from smaller array and take the remaining element from the other one
@@ -36,6 +37,8 @@ public class MedianofTwoSortedArrays {
 	 * 5. If the total length is odd then, we can simply pick the min( nums2[mid+1], nums1[mid+1])
 	 * 6. If its is even then we need the previous element which can be found by the logic max(nums1[mid], nums2[mid)
 	 * Why max for previous element, this is because , the element are sorted in descending order. 
+	 * 
+	 * But in leet code this one taking more time like 2ms and findMedianSortedArrays is 1ms
 	 * 
 	 */
 	public static double findMedianSortedArraysBS(int[] nums1, int[] nums2) {
