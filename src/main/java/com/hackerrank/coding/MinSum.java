@@ -56,5 +56,8 @@ public class MinSum {
 	    return sum;
 
 	    }
+		public static void main(String[] args) {
+			System.out.println( String.valueOf(0d));
+		}
 
 }
