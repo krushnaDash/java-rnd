@@ -34,26 +34,32 @@ public class CombinationSum {
 	// todo complete it 
 	
 	public List<List<Integer>> combinationSumLoop(int[] candidates, int target) {
-		List<List<Integer>> result = new ArrayList<List<Integer>>();
-		List<Integer> currentList= new ArrayList<Integer>();
-		
-		
-		for(int num : candidates) {
-			currentList.add(num);
-			int currentSum= num;
-			
-			// add the current number
-			while(currentSum <= target) {
-				if(currentSum == target) {
-					result.add(new ArrayList<Integer>(currentList));
-					break;
-				}
-				currentSum+=num;
-				currentList.add(num);
-			}
-		}
-		
-		return result;
+	    List<List<Integer>> result = new ArrayList<>();
+	    // Each stack element: Object[]{currentList, currentSum, startIndex}
+	    java.util.Stack<Object[]> stack = new java.util.Stack<>();
+	    stack.push(new Object[]{new ArrayList<Integer>(), 0, 0});
+
+	    while (!stack.isEmpty()) {
+	        Object[] state = stack.pop();
+	        @SuppressWarnings("unchecked")
+	        List<Integer> currentList = (List<Integer>) state[0];
+	        int currentSum = (int) state[1];
+	        int start = (int) state[2];
+
+	        if (currentSum == target) {
+	            result.add(new ArrayList<>(currentList));
+	            continue;
+	        }
+	        if (currentSum > target) {
+	            continue;
+	        }
+	        for (int i = start; i < candidates.length; i++) {
+	            List<Integer> nextList = new ArrayList<>(currentList);
+	            nextList.add(candidates[i]);
+	            stack.push(new Object[]{nextList, currentSum + candidates[i], i});
+	        }
+	    }
+	    return result;
 	
 	}
 	

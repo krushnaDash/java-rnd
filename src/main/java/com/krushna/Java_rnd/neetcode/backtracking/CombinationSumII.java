@@ -62,7 +62,7 @@ public class CombinationSumII {
 			// remove the appended element 
 			currentList.removeLast();
 			// skip the elements if it is same  element and call the DFS
-			while(candidates[i] == candidates[i+1])
+			while( i< candidates.length-1 && candidates[i] == candidates[i+1])
 				++i;
 			
 			dfs(candidates, target, currentSum, currentList, result, i+1);
