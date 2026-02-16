@@ -1,5 +1,7 @@
 package com.hackerrank.coding;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,65 +38,67 @@ import java.util.List;
  * [ ”0804840”, ”0813840”, ”0822840”, ”0831840”, ”0840840” ]
  * 
  * 
- * def findSchedules(workHours, dayHours, pattern):
-
-    # hours already assigned
-    assigned = sum(map(int,[x for x in pattern if not x == '?']))
-    # additional hours needed
-    needed = workHours - assigned
-    
-    result = []
-
-    def backtrack(cr_pattern, index, need):
-        if index == len(pattern):
-            if need == 0:
-                result.append(cr_pattern)
-            return
-        if pattern[index] == '?':
-            for i in range(0, min(dayHours + 1, need + 1)):
-                backtrack(cr_pattern + str(i), index + 1, need - i)
-        else:
-            backtrack(cr_pattern + pattern[index], index + 1, need)
-
-    backtrack("", 0, needed)
-    result.sort()
-
-    return result
- * 
  * 
  */
 public class WorkSchedule {
 	
 	
 	 public static List<String> findSchedules(int workHours, int dayHours, String pattern) {
-		    // Write your code here
-		    // This method should return a list of valid schedules based on the given work hours,
+		// This method should return a list of valid schedules based on the given work hours,
 		 int assiginedHours = 0;
+		 List<String> findSchedules= new ArrayList<String>();
+		 int countDays=0;
 		 for(char c : pattern.toCharArray()) {
 			 if(c!= '?') {
 				 assiginedHours += Character.getNumericValue(c);
+			 }else {
+				 countDays++;
 			 }
 		 }
 		 int needeHours = workHours - assiginedHours;
-		 return null;
+		 List<String> schdules= new ArrayList<String>();
+		 int[] currentSchdule= new int[countDays];
+		 backTrackDFS(needeHours, dayHours, schdules, currentSchdule,0);
+		 // we got the possible pattern for each ? mark, let create all schedule, by replacing them
+		 
+		 for(String schdule: schdules) {
+			 char[] chars=pattern.toCharArray();
+			 for(int i=0,j=0; i < chars.length; ++i) {
+				 if(chars[i] == '?') {
+					 chars[i]= schdule.charAt(j);
+					 ++j;
+				 }
+			 }
+			 findSchedules.add(new String(chars)); 
+		 }
+		return findSchedules;
 		 
      }
-	 
-	/**
-	  *
-	 * Here we can use the backtracking algorithm, with below condition to check valid or in valid 
-	 * 1. open bracket== close bracket == n
-	 * 2. close bracket < open bracket
-	 * 3. Start with open brackert
-	 * 
-	 * for this we need to have recursive function
-	 * ((()))
-	 * ((())
-	 */
-	  
-	 public static void  backTrack(String currentPattern, int needHours, int index) {
-		 
-	 }
+	 	// we can pass the whole pattern string and do DFS for the position which are marked as ?
+		public static void backTrackDFS(int needHours, int dayHours, List<String> allSchdule, int[] currentSchdule, int index) {
+			// base case
+			int sum = Arrays.stream(currentSchdule).sum();
+			if(sum == needHours && index <= currentSchdule.length) {
+				StringBuilder value= new StringBuilder();
+				for(int h:currentSchdule) {
+					value.append(h);
+				}
+				allSchdule.add(new String(value));
+				return;
+			}
+			if(sum > needHours || index > currentSchdule.length) {
+				return;
+			}
+			if(sum< needHours && index < currentSchdule.length) {
+				// try all the possible number for 0th position and DFS for the next position for all number
+				for(int i=0; i <= dayHours; ++i) {
+					currentSchdule[index]=i;
+					backTrackDFS(needHours, dayHours, allSchdule, currentSchdule, index+1);
+					// do the clean up
+					currentSchdule[index]=0;
+				}
+			}
+		}
 	 
 
 	 
@@ -107,7 +111,6 @@ public class WorkSchedule {
 		 String pattern = "08??840"; // Example pattern
 		 
 		 List<String> schedules = findSchedules(workHours, dayHours, pattern);
-		 
 		 // Print the schedules
 		 for (String schedule : schedules) {
 			 System.out.println(schedule);

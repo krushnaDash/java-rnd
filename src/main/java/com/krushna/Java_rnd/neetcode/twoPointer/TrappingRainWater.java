@@ -33,7 +33,7 @@ public class TrappingRainWater {
 		int rightMax=height[right];
 				
 		while(left< right) {
-			// since we are considering the min and contineu with left till it is small so this will does not matter with really the max right
+			// since we are considering the min and continue with left till it is small so this will does not matter with really the max right
 			if(leftMax <= rightMax) {
 				left++;
 				leftMax=Math.max(leftMax, height[left]);
