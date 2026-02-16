@@ -41,7 +41,7 @@ public class TwoSumL1 {
 		// now visit the array again and lookup the map and stored the number
 		for(int i =0 ; i< nums.length; ++i) {
 			if(numberIndexMap.containsKey(target-nums[i])) {
-				return new int[] {i,numberIndexMap.get(target-nums[i]) };
+				return new int[] {numberIndexMap.get(target-nums[i]),i };
 			}else {
 				numberIndexMap.put(nums[i], i);
 			}
