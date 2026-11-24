@@ -1,5 +1,8 @@
 package com.krushna.Java_rnd.neetcode.slidingWindow;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
  * 
@@ -52,6 +55,28 @@ public class LongestSubstringWithoutRepeatingCharacters {
 			p2++;
 		}
 		return maxSubString;
+	}
+
+	// this is using hash set
+	public int lengthOfLongestSubstringv2(String s) {
+		int l=0, r=0;
+		Set<Character> chars= new HashSet<>();
+		int maxSize=0;
+		while ( r< s.length()){
+			Character c= s.charAt(r);
+			if(chars.contains(c)) {
+				// move the L and remove the chars, till its unique again
+				while (l < r && chars.contains(c)){
+					chars.remove(s.charAt(l));
+					++l;
+				}
+			}
+			// add the current char
+			chars.add(c);
+			maxSize=Math.max(maxSize, chars.size());
+			++r;
+		}
+		return maxSize;
 	}
 
 	public static void main(String[] args) {

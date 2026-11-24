@@ -29,7 +29,20 @@ package com.krushna.Java_rnd.neetcode.slidingWindow;
  */
 public class BestTimetoBuyAndSellStock {
 
+	// simple solution
 	public static int maxProfit(int[] prices) {
+		// keep the left min and consider each i as selling index
+		// and keep the max profit
+		int leftmin=Integer.MAX_VALUE;
+		int maxProfix=0;
+		for(int price:prices){
+			maxProfix=Math.max(maxProfix, price-leftmin);
+			leftmin=Math.min(leftmin, price);
+		}
+		return maxProfix;
+	}
+
+	public static int maxProfitv2(int[] prices) {
 		// base case
 		if(prices.length <2) {
 			return 0;
